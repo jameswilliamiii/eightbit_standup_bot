@@ -48,5 +48,5 @@ Lita.configure do |config|
   config.handlers.logger.enable_http_log = true
 
   ## Lita Standup
-  config.handlers.standup.server = Settings.config['standup']['server']
+  config.handlers.standup.server = Settings.config['api']['url']
 end
