@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'lita'
-gem 'lita-ext'
+gem 'activesupport'
+gem 'lita', '~> 4.7'
 gem 'lita-hipchat'
 gem 'lita-logger'
+
+gem 'byebug'
