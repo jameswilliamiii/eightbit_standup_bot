@@ -7,20 +7,13 @@ Lita.configure do |config|
   # The name your robot will use.
   if Lita.env.development?
     config.robot.name = "Lita"
+    config.robot.log_level = :debug
   else
     config.robot.name = "PMDawn"
+    config.robot.log_level = :info
   end
   # The locale code for the language to use.
   config.robot.locale = :en
-
-  # The severity of messages to log. Options are:
-  # :debug, :info, :warn, :error, :fatal
-  # Messages at the selected level and above will be logged.
-  if Lita.env.development?
-    config.robot.log_level = :debug
-  else
-    config.robot.log_level = :info
-  end
 
   # An array of user IDs that are considered administrators. These users
   # the ability to add and remove other users from authorization groups.
@@ -50,7 +43,7 @@ Lita.configure do |config|
   # config.handlers.some_handler.some_config_key = "value"
 
   ## Lita Logger
-  config.handlers.logger.log_file = "/tmp/lita_chat.log"
+  config.handlers.logger.log_file = "#{Lita.root}/log/lita_chat.log"
   config.handlers.logger.enable_http_log = true
 
   ## Lita Standup
