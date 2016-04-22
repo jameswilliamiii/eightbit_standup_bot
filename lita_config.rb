@@ -1,5 +1,6 @@
 require './lib/settings'
 require './lib/lita'
+require './lib/api'
 require './handlers/lita-standup'
 
 Lita.configure do |config|
