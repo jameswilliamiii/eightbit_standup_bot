@@ -1,5 +1,6 @@
 require './lib/settings'
 require './lib/lita'
+require './handlers/lita-standup'
 
 Lita.configure do |config|
 
@@ -31,7 +32,6 @@ Lita.configure do |config|
   config.robot.adapter = :hipchat
 
   ## Lita HipChat
-  debugger
   config.adapters.hipchat.jid      = Settings.config['hipchat']['jid']
   config.adapters.hipchat.password = Settings.config['hipchat']['password']
   config.adapters.hipchat.debug    = true
@@ -52,4 +52,7 @@ Lita.configure do |config|
   ## Lita Logger
   config.handlers.logger.log_file = "/tmp/lita_chat.log"
   config.handlers.logger.enable_http_log = true
+
+  ## Lita Standup
+  config.handlers.standup.server = Settings.config['standup']['server']
 end
