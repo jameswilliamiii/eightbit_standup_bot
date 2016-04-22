@@ -36,8 +36,8 @@ Lita.configure do |config|
   config.handlers.logger.log_file = "log/lita.log"
 
   # Lita-HipChat
-  config.adapters.hipchat.jid      = ENV['HIPCHAT_JID']
-  config.adapters.hipchat.password = ENV['HIPCHAT_PASSWORD']
-  config.adapters.hipchat.debug    = true
-  config.adapters.hipchat.rooms    = :all
+  config.adapter.jid      = ENV['HIPCHAT_JID']
+  config.adapter.password = ENV['HIPCHAT_PASSWORD']
+  config.adapter.debug    = true
+  config.adapter.rooms    = :all
 end
