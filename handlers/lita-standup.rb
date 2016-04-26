@@ -8,7 +8,7 @@ module Lita
       config :server
 
       route(/^remind$/, :index, command: true, help: { "remind" => "Reminder of stand-ups required today." })
-      route(/standup/i, :create, command: true, help: { "standup program_name" => "Create a new status update for your PM." })
+      route(/standup/i, :create, command: true, help: { "standup" => "Create a new status update for your PM." })
 
       def index(response)
         id = response.user.id
@@ -31,10 +31,26 @@ module Lita
       end
 
       def create(response)
-        response.reply("It Worked!")
+        private_message(response) and return unless response.room
+        id = response.user.id
+        url = build_uri(config.server, 'status_updates', id)
+        url << "&hipchat_room_name=#{response.room.name}"
+        body = {status: response.message.body}
+        api_response = parse post(url, body)
+        if api_response["success"]
+          response.reply("(thumbsup) Your stand-up has been recorded")
+        elsif api_response["error"]
+          response.reply api_response["error"]
+        else
+          response.reply "Oops, something went awry and I was unable to record your stand-up :( "
+        end
       end
 
       private
+
+      def private_message(response)
+        response.reply "New stand-ups need to be given in the the program's chat room, not by private message."
+      end
 
       def build_summary(standups)
         stand_up_s = standups.count > 1 ? "stand-ups" : "stand-up"
