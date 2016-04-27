@@ -3,6 +3,7 @@ require './lib/lita'
 require './lib/api'
 require './handlers/lita-reminder'
 require './handlers/lita-standup'
+require './handlers/lita-attendee'
 
 Lita.configure do |config|
 
@@ -53,4 +54,7 @@ Lita.configure do |config|
 
   ## Lita Reminder
   config.handlers.reminder.server = Settings.config['api']['url']
+
+  ## Lita Attendee
+  config.handlers.attendee.server = Settings.config['api']['url']
 end

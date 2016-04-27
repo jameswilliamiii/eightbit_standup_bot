@@ -58,6 +58,7 @@ module Lita
       end
 
       def valid_date( str, format="%m/%d/%Y" )
+        str = str.gsub('list ', '')
         Date.strptime(str,format) rescue false
       end
 
@@ -82,7 +83,7 @@ module Lita
       def no_status_updates
         msg = 'Sorry, I could not find any status updates for'
         if @date
-          msg << " #{@response.message.body.gsub('list', '')}."
+          msg << " #{@response.message.body.gsub('list ', '')}."
         else
           msg << " today."
         end
