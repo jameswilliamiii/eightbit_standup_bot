@@ -1,6 +1,7 @@
 require './lib/settings'
 require './lib/lita'
 require './lib/api'
+require './handlers/lita-reminder'
 require './handlers/lita-standup'
 
 Lita.configure do |config|
@@ -19,7 +20,7 @@ Lita.configure do |config|
   # An array of user IDs that are considered administrators. These users
   # the ability to add and remove other users from authorization groups.
   # What is considered a user ID will change depending on which adapter you use.
-  # config.robot.admins = ["1", "2"]
+  config.robot.admins = Settings.config['admins']
 
   # The adapter you want to connect with. Make sure you've added the
   # appropriate gem to the Gemfile.
@@ -49,4 +50,7 @@ Lita.configure do |config|
 
   ## Lita Standup
   config.handlers.standup.server = Settings.config['api']['url']
+
+  ## Lita Reminder
+  config.handlers.reminder.server = Settings.config['api']['url']
 end
