@@ -10,22 +10,20 @@ module Lita
       route(/remind/i, :index, command: true, help: { "remind" => "Reminder of stand-ups required today." })
 
       def index(response)
+        @response = response
         id = response.user.id
         url = build_uri(config.server, 'standups', id)
+        url << "&hipchat_username=#{@response.user.name}"
         standups = parse get(url)
         if standups.any?
-
-          response.reply(build_summary(standups))
-
+          @response.reply_privately(build_summary(standups))
           standups.each_with_index do |standup, i|
             remind_at = build_remind_at(standup)
             number = build_number(standups, i)
-
-            response.reply("#{number}#{standup['program_name']} should be submitted by #{remind_at}")
-
+            @response.reply_privately("#{number}#{standup['program_name']} should be submitted by #{remind_at}")
           end
         else
-          response.reply("Booyah, you do not have any stand-ups to worry about right now. #{find_activity}")
+          @response.reply_privately("Booyah, you do not have any stand-ups to worry about right now. #{find_activity}")
         end
       end
 
