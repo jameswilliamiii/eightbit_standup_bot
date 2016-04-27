@@ -1,6 +1,7 @@
 require './lib/settings'
 require './lib/lita'
 require './lib/api'
+require './lib/common'
 require './handlers/lita-reminder'
 require './handlers/lita-standup'
 require './handlers/lita-attendee'

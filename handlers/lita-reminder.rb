@@ -4,6 +4,7 @@ module Lita
   module Handlers
     class Reminder < Handler
       include ::Api
+      include ::Common
 
       config :server
 
@@ -11,8 +12,7 @@ module Lita
 
       def index(response)
         @response = response
-        id = response.user.id
-        url = build_uri(config.server, 'standups', id)
+        url = build_uri(config.server, 'standups', user_id(@response))
         url << "&hipchat_username=#{@response.user.name}"
         standups = parse get(url)
         if standups.any?

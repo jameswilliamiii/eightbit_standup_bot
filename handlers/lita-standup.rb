@@ -4,6 +4,7 @@ module Lita
   module Handlers
     class Standup < Handler
       include ::Api
+      include ::Common
 
       config :server
 
@@ -12,8 +13,8 @@ module Lita
 
       def index(response)
         @response = response
-        sent_from_private_message and return if @response.room.nil?
-        url = build_uri(config.server, 'status_updates', user_id)
+        sent_from_private_message(@response) and return if @response.room.nil?
+        url = build_uri(config.server, 'status_updates', user_id(response))
         url << "&hipchat_room_name=#{@response.room.name}&hipchat_username=#{@response.user.name}"
         @date = valid_date @response.message.body
         url << "&date=#{@date}" if @date
@@ -36,10 +37,12 @@ module Lita
 
       def create(response)
         @response = response
-        sent_from_private_message and return if @response.room.nil?
+        sent_from_private_message(@response) and return if @response.room.nil?
         empty_message and return if response_is_empty?
-        url = build_uri(config.server, 'status_updates', user_id)
-        url << "&hipchat_room_name=#{@response.room.name}&hipchat_username=#{@response.user.name}"
+        url = build_uri(config.server, 'status_updates', user_id(response))
+        url << "&hipchat_room_name=#{@response.room.name}"
+        url << "&hipchat_username=#{@response.user.name}"
+        url << "&hipchat_mention=#{@response.user.mention_name}"
         body = {status: @response.message.body}
         api_response = parse post(url, body)
         if api_response["success"]
@@ -53,10 +56,6 @@ module Lita
 
       private
 
-      def user_id
-        @response.user.id
-      end
-
       def valid_date( str, format="%m/%d/%Y" )
         str = str.gsub('list ', '')
         Date.strptime(str,format) rescue false
@@ -65,10 +64,6 @@ module Lita
       def build_summary(status_updates)
         update_s = status_updates.count > 1 ? "updates" : "update"
         "You have #{status_updates.count} stand-up status #{update_s} submitted #{status_updates.first.created_at.strftime("%a %b %e, %Y")}:"
-      end
-
-      def sent_from_private_message
-        @response.reply "This action must be performed in the the program's chat room, not by private message."
       end
 
       def empty_message

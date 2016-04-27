@@ -6,12 +6,15 @@ module Api
   private
 
   def get(url)
-    Net::HTTP.get make_uri(url)
+    HTTParty.get make_uri(url)
   end
 
   def post(url, body={})
-    Net::HTTP.post_form make_uri(url), body
+    HTTParty.post make_uri(url), {body: body}
+  end
 
+  def delete(url)
+    HTTParty.delete make_uri(url)
   end
 
   def parse(response)
