@@ -29,13 +29,7 @@ module Lita
       end
 
       def receive_reminder_hook(request, response)
-        body = MultiJson.load(request.body)
-        if body["attendees"]
-          body["attendees"].each do |user|
-            source = lita_source(user['hipchat_id'])
-            robot.send_message(source, "Just a kind reminder from your favorite PM that a #{user['program_name']} stand-up is due today :)")
-          end
-        end
+        handle_reminder_request(request)
         response.status = 202
       end
 
@@ -66,6 +60,16 @@ module Lita
           'Give yourself a high five'
         ]
         arr.sample(1).first
+      end
+
+      def handle_reminder_request(request)
+        body = MultiJson.load(request.body)
+        if body["attendees"]
+          body["attendees"].each do |user|
+            source = lita_source(user['hipchat_id'])
+            robot.send_message(source, "Just a kind reminder from your favorite PM that a #{user['program_name']} stand-up is due today :)")
+          end
+        end
       end
 
       def lita_source(hipchat_id)
