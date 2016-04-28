@@ -34,4 +34,8 @@ module Api
     api_url + path + "?api_key=#{api_key}&hipchat_id=#{id}"
   end
 
+  def valid_api_key?(request)
+    request.params['api_key'] == Settings.config['api']['key']
+  end
+
 end

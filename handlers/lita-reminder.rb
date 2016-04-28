@@ -29,8 +29,12 @@ module Lita
       end
 
       def receive_reminder_hook(request, response)
-        handle_reminder_request(request)
-        response.status = 202
+        if valid_api_key?(request)
+          handle_reminder_request(request)
+          response.status = 202
+        else
+          response.status = 401
+        end
       end
 
       private
