@@ -30,7 +30,8 @@ module Api
   end
 
   def build_uri(api_url, path, id)
-    api_url + path + "?hipchat_id=#{id}"
+    api_key = Settings.config['api']['key']
+    api_url + path + "?api_key=#{api_key}&hipchat_id=#{id}"
   end
 
 end
