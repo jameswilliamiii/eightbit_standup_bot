@@ -9,6 +9,7 @@ module Lita
       config :server
 
       route(/remind/i, :index, command: true, help: { "remind" => "Reminder of stand-ups required today." })
+      http.post("/reminder-hook", :receive_reminder_hook)
 
       def index(response)
         @response = response
@@ -25,6 +26,17 @@ module Lita
         else
           @response.reply_privately("Booyah, you do not have any stand-ups to worry about right now. #{find_activity}")
         end
+      end
+
+      def receive_reminder_hook(request, response)
+        body = MultiJson.load(request.body)
+        if body["attendees"]
+          body["attendees"].each do |user|
+            source = lita_source(user['hipchat_id'])
+            robot.send_message(source, "Just a kind reminder from your favorite PM that a #{user['program_name']} stand-up is due today :)")
+          end
+        end
+        response.status = 202
       end
 
       private
@@ -54,6 +66,11 @@ module Lita
           'Give yourself a high five'
         ]
         arr.sample(1).first
+      end
+
+      def lita_source(hipchat_id)
+        user = Lita::User.new(hipchat_id)
+        Lita::Source.new(user: user)
       end
 
     end
