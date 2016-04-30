@@ -1,0 +1,2 @@
+- name: install upstart configuration for bot
+  template: src=templates/upstart.conf dest=/etc/init/{{ lita_app_name }}.conf

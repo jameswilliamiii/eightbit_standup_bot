@@ -1,0 +1,17 @@
+- name: create lita app config directory
+  file:
+    path=~/apps/{{ lita_app_name }}/shared/config
+    state=directory
+
+- name: create lita app log directory
+  file:
+    path=~/apps/{{ lita_app_name }}/shared/log
+    state=directory
+
+- name: install lita application.yml
+  template: src=templates/application.yml dest=~/apps/{{ lita_app_name }}/shared/config/application.yml
+
+- name: create lita app current directory
+  file:
+    path=~/apps/{{ lita_app_name }}/current
+    state=directory

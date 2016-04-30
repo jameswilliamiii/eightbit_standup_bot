@@ -1,0 +1,50 @@
+- name: stop lita server
+  command: stop eightbit-standup-bot
+  sudo: yes
+
+
+- name: get release timestamp
+  command: date +%Y%m%d%H%M%S
+  register: timestamp
+
+- name: name release directory
+  command: echo "~/apps/{{ lita_app_name }}/releases/{{ timestamp.stdout }}"
+  register: release_path
+
+- name: create release directory
+  file: >
+  state=directory
+  owner=deploy
+  group=deploy
+  recurse=yes
+  path={{ release_path.stdout }}
+
+- name: checkout git repo into release directory
+  git: >
+    repo=git@github.com:jameswilliamiii/eightbit_standup_bot.git
+    dest="{{ release_path.stdout }}"
+    version="{{ git_branch }}"
+    accept_hostkey=yes
+    sudo: no
+
+- name: install dependencies
+  shell: cd {{ release_path.stdout }}; bundle install
+  sudo: no
+
+- name: link current directory
+  file: >
+    state=link
+    path="~/apps/{{ lita_app_name }}/current"
+    src="{{ release_path.stdout }}"
+    sudo: no
+
+- name: link log directory
+  file: >
+    state=link
+    path="{{ release_path.stdout }}/log"
+    src="~/apps/{{ lita_app_name }}/shared/log"
+    sudo: no
+
+- name: start lita server
+  command: start eightbit-standup-bot
+  sudo: yes
