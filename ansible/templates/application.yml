@@ -6,4 +6,4 @@
     url: {{ api_url }}
     key: {{ api_key }}
   admins:
-    - { admin_id }
+    - {{ admin_id }}

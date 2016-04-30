@@ -1,6 +1,6 @@
-- name: stop lita server
-  command: stop eightbit-standup-bot
-  sudo: yes
+# - name: stop lita server
+#   command: stop eightbit-standup-bot
+#   sudo: yes
 
 
 - name: get release timestamp
@@ -8,42 +8,93 @@
   register: timestamp
 
 - name: name release directory
-  command: echo "~/apps/{{ lita_app_name }}/releases/{{ timestamp.stdout }}"
+  command: "echo '/home/{{ deploy_user }}/apps/{{ lita_app_name }}/releases/{{ timestamp.stdout }}'"
   register: release_path
 
 - name: create release directory
   file: >
-  state=directory
-  owner=deploy
-  group=deploy
-  recurse=yes
-  path={{ release_path.stdout }}
+    state=directory
+    owner={{ deploy_user }}
+    group={{ deploy_user }}
+    recurse=yes
+    path={{ release_path.stdout }}
+
+- name: Create the Github SSH public key file
+  copy: >
+    src={{ github_public_key }}
+    dest=/home/{{ deploy_user }}/.ssh/id_rsa_github.pub
+    mode=0644
+    owner={{ deploy_user }}
+    group={{ deploy_user }}
+
+- name: Create the Github SSH private key file
+  copy: >
+    src={{ github_private_key }}
+    dest=/home/{{ deploy_user }}/.ssh/id_rsa_github
+    mode=0600
+    owner={{ deploy_user }}
+    group={{ deploy_user }}
 
 - name: checkout git repo into release directory
   git: >
-    repo=git@github.com:jameswilliamiii/eightbit_standup_bot.git
-    dest="{{ release_path.stdout }}"
-    version="{{ git_branch }}"
+    repo={{ git_repo }}
+    dest={{ release_path.stdout }}
+    version={{ git_branch }}
     accept_hostkey=yes
-    sudo: no
+    key_file=/home/{{ deploy_user }}/.ssh/id_rsa_github
+
+- name: delete private key
+  command: "rm -rf dest=/home/{{ deploy_user }}/.ssh/id_rsa_github"
+
+- name: create app config directory
+  file: >
+    state=directory
+    owner={{ deploy_user }}
+    group={{ deploy_user }}
+    recurse=yes
+    path={{ release_path.stdout }}/config
+
+- name: link application.yml
+  file: >
+    state=link
+    path="{{ release_path.stdout }}/config/application.yml"
+    src="~/apps/{{ lita_app_name }}/shared/config/application.yml"
+    force=yes
+
+- name: Install Bundler
+  sudo_user: "{{ deploy_user }}"
+  command: bash -lc "gem install bundler"
 
 - name: install dependencies
-  shell: cd {{ release_path.stdout }}; bundle install
+  shell: cd {{ release_path.stdout }} && sudo -iu {{ deploy_user }} gem install bundler
   sudo: no
+
+- name: remove current directory
+  file: >
+    path="~/apps/{{ lita_app_name }}/current"
+    state=absent
 
 - name: link current directory
   file: >
     state=link
     path="~/apps/{{ lita_app_name }}/current"
     src="{{ release_path.stdout }}"
-    sudo: no
+    force=yes
+
+- name: create app log directory
+  file: >
+    state=directory
+    owner={{ deploy_user }}
+    group={{ deploy_user }}
+    recurse=yes
+    path={{ release_path.stdout }}/log
 
 - name: link log directory
   file: >
     state=link
-    path="{{ release_path.stdout }}/log"
-    src="~/apps/{{ lita_app_name }}/shared/log"
-    sudo: no
+    path="~/apps/{{ lita_app_name }}/shared/log"
+    src="{{ release_path.stdout }}/log"
+    force=yes
 
 - name: start lita server
   command: start eightbit-standup-bot
