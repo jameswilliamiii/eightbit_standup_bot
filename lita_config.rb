@@ -13,7 +13,8 @@ Lita.configure do |config|
     config.robot.name = "Lita"
     config.robot.log_level = :debug
   else
-    config.robot.name = "PMDawn"
+    # config.robot.name = "PMDawn"
+    config.robot.name = "Lita"
     config.robot.log_level = :info
   end
   # The locale code for the language to use.
