@@ -8,15 +8,15 @@ class Settings
       hash[Lita.env]
     else
       {
-        hipchat: {
-          jid: ENV['HIPCHAT_JID'],
-          password: ENV['HIPCHAT_PASSWORD']
+        "hipchat" => {
+          "jid" => ENV['HIPCHAT_JID'],
+          "password" => ENV['HIPCHAT_PASSWORD']
         },
-        api: {
-          url: ENV['API_URL'],
-          key: ENV['API_KEY']
+        "api" => {
+          "url" => ENV['API_URL'],
+          "key" => ENV['API_KEY']
         },
-        admins: [ ENV['ADMIN_ID'] ]
+        "admins" => [ ENV['ADMIN_ID'] ]
       }
     end
   end

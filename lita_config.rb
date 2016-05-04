@@ -9,6 +9,7 @@ require './handlers/lita-attendee'
 Lita.configure do |config|
 
   # The name your robot will use.
+  debugger
   if Lita.env.development?
     config.robot.name = "Lita"
     config.robot.log_level = :debug
