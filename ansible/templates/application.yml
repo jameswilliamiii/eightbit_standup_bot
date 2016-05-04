@@ -1,9 +1,0 @@
-{{ lita_env }}:
-  hipchat:
-    jid: {{ hipchat_jid }}
-    password: {{ hipchat_password }}
-  api:
-    url: {{ api_url }}
-    key: {{ api_key }}
-  admins:
-    - {{ admin_id }}

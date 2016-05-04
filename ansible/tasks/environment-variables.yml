@@ -1,8 +1,0 @@
-- name: install environment variables
-  lineinfile:
-    dest: /etc/environment
-    line: "{{ item.line }}"
-    regexp: "{{ item.regexp }}"
-    state: present
-  with_items:
-    - { regexp: '^export LITA_ENV', line: "export LITA_ENV={{ lita_env }}"}
