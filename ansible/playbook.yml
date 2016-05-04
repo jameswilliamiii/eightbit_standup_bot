@@ -48,10 +48,10 @@
     - name: restart redis-server
       service: name=redis-server state=restarted
 
-- hosts: all
-  sudo: yes
-  tasks:
-    - include: tasks/upstart.yml
+# - hosts: all
+#   sudo: yes
+#   tasks:
+#     - include: tasks/upstart.yml
 
 - hosts: all
   sudo: no

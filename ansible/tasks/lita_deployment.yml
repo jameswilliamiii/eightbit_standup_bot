@@ -97,5 +97,5 @@
     force=yes
 
 - name: start lita server
-  command: start eightbit-standup-bot
+  command: sudo service eightbit-standup-bot start
   sudo: yes

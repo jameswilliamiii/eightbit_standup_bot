@@ -36,3 +36,17 @@
     recurse=yes
   when: >
     currnet_dir.stat.isdir is defined and currnet_dir.stat.isdir
+
+- name: check for pids directory
+  stat: path=~/apps/{{ lita_app_name }}/shared/pids
+  register: pid_dir
+
+- name: create pids directory (only if one is not there)
+  file: >
+    path=~/apps/{{ lita_app_name }}/shared/pids
+    state=directory
+    owner={{ deploy_user }}
+    group={{ deploy_user }}
+    recurse=yes
+  when: >
+    pid_dir.stat.isdir is defined and pid_dir.stat.isdir
